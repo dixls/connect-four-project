@@ -85,15 +85,17 @@ function placeInTable(y, x) {
 function endGame(msg) {
   // TODO: pop up alert message
   const gameCont = document.getElementById('game');
+  const overlay = document.createElement('div');
   const endPop = document.createElement('div');
+  overlay.setAttribute('id', 'overlay');
   endPop.innerText = msg;
   endPop.setAttribute('id', 'popover');
   const button = document.createElement('button')
-  button.innerText = "Play again!"
+  button.innerHTML = "Play again!<br>";
   button.addEventListener("click", resetGame);
   endPop.append(button);
-  gameCont.append(endPop);
-
+  overlay.append(endPop);
+  gameCont.append(overlay);
 }
 
 /** handleClick: handle click of column top to play piece */
@@ -102,36 +104,37 @@ function handleClick(evt) {
   // get x from ID of clicked cell
   // console.log("click");
   let x = +evt.target.id;
-
   // get next spot in column (if none, ignore click)
   let y = findSpotForCol(x);
   if (y === null) {
     return;
   }
-
   // place piece in board and add to HTML table
   placeInTable(y, x);
-
   // check for win
   if (checkForWin()) {
-    return endGame(`Player ${currPlayer} won!`);
+    return setTimeout(() => (endGame(`Player ${currPlayer} won!`)), 400);
     
   }
-
   // check for tie
   if (checkForTie()) {
-    return endGame(`it's a tie!`);  
+    return setTimeout(() => (endGame(`it's a tie!`)), 400);  
   }
-
   // switch players
   [currPlayer, otherPlayer] = [otherPlayer, currPlayer]
+  // toggle class for hover color at top
+  document.getElementById("column-top").classList.toggle("p2");
 }
 
 function resetGame (evt) {
   evt.preventDefault();
   makeBoard();
-  document.getElementById('board').removeChild()
-  document.getElementById('popover').remove();
+  const board = document.getElementById("board")
+  while(board.firstChild){
+    board.removeChild(board.firstChild);
+  }
+  document.getElementById('overlay').remove();
+  makeHtmlBoard();
 
 }
 
