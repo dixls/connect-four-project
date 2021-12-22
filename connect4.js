@@ -96,6 +96,9 @@ function endGame(msg) {
   endPop.append(button);
   overlay.append(endPop);
   gameCont.append(overlay);
+  document.getElementById("column-top").classList.remove("p2");
+  currPlayer = 1;
+  otherPlayer = 2;
 }
 
 /** handleClick: handle click of column top to play piece */
