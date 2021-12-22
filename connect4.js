@@ -84,7 +84,16 @@ function placeInTable(y, x) {
 
 function endGame(msg) {
   // TODO: pop up alert message
-  alert(`player ${currPlayer} wins!`)
+  const gameCont = document.getElementById('game');
+  const endPop = document.createElement('div');
+  endPop.innerText = msg;
+  endPop.setAttribute('id', 'popover');
+  const button = document.createElement('button')
+  button.innerText = "Play again!"
+  button.addEventListener("click", resetGame);
+  endPop.append(button);
+  gameCont.append(endPop);
+
 }
 
 /** handleClick: handle click of column top to play piece */
@@ -101,7 +110,6 @@ function handleClick(evt) {
   }
 
   // place piece in board and add to HTML table
-  // TODO: add line to update in-memory board
   placeInTable(y, x);
 
   // check for win
@@ -114,11 +122,17 @@ function handleClick(evt) {
   if (checkForTie()) {
     return endGame(`it's a tie!`);  
   }
-  // TODO: check if all cells in board are filled; if so call, call endGame
 
   // switch players
-  // TODO: switch currPlayer 1 <-> 2
   [currPlayer, otherPlayer] = [otherPlayer, currPlayer]
+}
+
+function resetGame (evt) {
+  evt.preventDefault();
+  makeBoard();
+  document.getElementById('board').removeChild()
+  document.getElementById('popover').remove();
+
 }
 
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -140,13 +154,13 @@ function checkForWin() {
   }
 
   // TODO: read and understand this code. Add comments to help you.
-
-  for (var y = 0; y < HEIGHT; y++) {
+  // creates an array of each possible win scenario starting from each cell on the board
+  for (let y = 0; y < HEIGHT; y++) {
     for (var x = 0; x < WIDTH; x++) {
-      var horiz = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3]];
-      var vert = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x]];
-      var diagDR = [[y, x], [y + 1, x + 1], [y + 2, x + 2], [y + 3, x + 3]];
-      var diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
+      let horiz = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3]];
+      let vert = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x]];
+      let diagDR = [[y, x], [y + 1, x + 1], [y + 2, x + 2], [y + 3, x + 3]];
+      let diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
 
       if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
         return true;
@@ -156,13 +170,7 @@ function checkForWin() {
 }
 
 function checkForTie() {
-  for (let y of board) {
-    if ( y.every(x => x == true)) {
-      return true
-    } else {
-      return
-    }
-  }
+  return board.every(val => val.every(x => x > 0))
 }
 
 makeBoard();
