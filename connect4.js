@@ -58,7 +58,6 @@ function makeHtmlBoard() {
 /** findSpotForCol: given column x, return top empty y (null if filled) */
 
 function findSpotForCol(x) {
-  // TODO: write the real version of this, rather than always returning 0
   for (let y = 0; y < HEIGHT; y++) {
     if (board[y][x] === null) {
       return y;
@@ -70,7 +69,6 @@ function findSpotForCol(x) {
 /** placeInTable: update DOM to place piece into HTML table of board */
 
 function placeInTable(y, x) {
-  // TODO: make a div and insert into correct table cell
   let currCell = document.getElementById(`${y}-${x}`);    // gets current cell
   // console.log(currCell);
   const newPiece = document.createElement('div');         // creates new piece
@@ -83,7 +81,6 @@ function placeInTable(y, x) {
 /** endGame: announce game end */
 
 function endGame(msg) {
-  // TODO: pop up alert message
   const gameCont = document.getElementById('game');
   const overlay = document.createElement('div');
   const endPop = document.createElement('div');
@@ -106,6 +103,7 @@ function endGame(msg) {
 function handleClick(evt) {
   // get x from ID of clicked cell
   // console.log("click");
+  const popUpDelay = 400;
   let x = +evt.target.id;
   // get next spot in column (if none, ignore click)
   let y = findSpotForCol(x);
@@ -114,14 +112,13 @@ function handleClick(evt) {
   }
   // place piece in board and add to HTML table
   placeInTable(y, x);
-  // check for win
+
   if (checkForWin()) {
-    return setTimeout(() => (endGame(`Player ${currPlayer} won!`)), 400);
-    
+    return setTimeout(() => (endGame(`Player ${currPlayer} won!`)), popUpDelay);
   }
-  // check for tie
+
   if (checkForTie()) {
-    return setTimeout(() => (endGame(`it's a tie!`)), 400);  
+    return setTimeout(() => (endGame(`it's a tie!`)), popUpDelay);  
   }
   // switch players
   [currPlayer, otherPlayer] = [otherPlayer, currPlayer]
@@ -162,13 +159,13 @@ function checkForWin() {
   // TODO: read and understand this code. Add comments to help you.
   // creates an array of each possible win scenario starting from each cell on the board
   for (let y = 0; y < HEIGHT; y++) {
-    for (var x = 0; x < WIDTH; x++) {
-      let horiz = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3]];
-      let vert = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x]];
-      let diagDR = [[y, x], [y + 1, x + 1], [y + 2, x + 2], [y + 3, x + 3]];
-      let diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
+    for (let x = 0; x < WIDTH; x++) {
+      let horizontalWinCondition = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3]];
+      let verticalWinCondition = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x]];
+      let diagonalDownRightWinCondition = [[y, x], [y + 1, x + 1], [y + 2, x + 2], [y + 3, x + 3]];
+      let diagonalDownLeftWinCondition = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
 
-      if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
+      if (_win(horizontalWinCondition) || _win(verticalWinCondition) || _win(diagonalDownRightWinCondition) || _win(diagonalDownLeftWinCondition)) {
         return true;
       }
     }
